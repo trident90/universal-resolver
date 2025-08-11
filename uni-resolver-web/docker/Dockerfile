@@ -15,7 +15,8 @@ RUN cd /opt/universal-resolver/uni-resolver-web && mvn clean package -N
 
 # build image
 
-FROM eclipse-temurin:17-jre-alpine
+#FROM eclipse-temurin:17-jre-alpine
+FROM amazoncorretto:17-alpine3.18-jdk
 # For amd64 architecture use amd64/eclipse-temurin:17-jre-alpine
 
 MAINTAINER Markus Sabadello <markus@danubetech.com>

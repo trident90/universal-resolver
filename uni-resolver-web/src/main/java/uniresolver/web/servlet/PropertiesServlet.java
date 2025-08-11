@@ -32,13 +32,20 @@ public class PropertiesServlet extends WebUniResolver {
 		Map<String, Map<String, Object>> properties;
 		String propertiesString;
 
+		// Fix Issue #553
 		try {
-
 			properties = this.properties();
 			propertiesString = properties == null ? null : objectMapper.writeValueAsString(properties);
+		} catch (IOException ioex) {
+			if (log.isWarnEnabled()) log.warn("IOException while retrieving properties: " + ioex.getMessage(), ioex);
+			ServletUtil.sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "IOException while retrieving properties: " + ioex.getMessage());
+			return;
+		} catch (IllegalArgumentException iaex) {
+			if (log.isWarnEnabled()) log.warn("IllegalArgumentException while retrieving properties: " + iaex.getMessage(), iaex);
+			ServletUtil.sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, "IllegalArgumentException while retrieving properties: " + iaex.getMessage());
+			return;
 		} catch (Exception ex) {
-
-			if (log.isWarnEnabled()) log.warn("Resolver reported: " + ex.getMessage(), ex);
+			if (log.isWarnEnabled()) log.warn("Unknown exception while retrieving properties: " + ex.getMessage(), ex);
 			ServletUtil.sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Resolver reported: " + ex.getMessage());
 			return;
 		}

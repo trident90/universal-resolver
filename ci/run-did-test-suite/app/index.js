@@ -61,36 +61,44 @@ const getShouldGenerateDefaultFile = () => {
     }
 }
 
+const DEBUG = process.env.DEBUG === 'true';
+
+function debugLog(...args) {
+    if (DEBUG) {
+        console.log(...args);
+    }
+}
+
 try {
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`The event payload: ${payload}`);
+    debugLog(`The event payload: ${payload}`);  // Fix Issue #558
 
     // Input variables
     const mode = getMode();
-    console.log(`Running in ${mode} mode`);
+    debugLog(`Running in ${mode} mode`);        // Fix Issue #559
 
     // LOCAL mode env variables
     const outputPath = getOutputPath();
-    console.log(`Output path for testfiles ${outputPath}`);
+    debugLog(`Output path for testfiles ${outputPath}`);    // Fix Issue #560
     const shouldGenerateDefaultFile = getShouldGenerateDefaultFile();
 
     // SERVER mode env variables
     const host = getHost();
-    console.log(`Testserver host ${host}`);
+    debugLog(`Testserver host ${host}`);    // Fix Issue #561
 
     // Common testset
     const testSet = getTestset();
-    console.log(`Running with testSet: ${testSet}`);
+    debugLog(`Running with testSet: ${testSet}`);   // Fix Issue #562
 
     const rawData = fs.readFileSync(testSet);
     const resolutionResults = JSON.parse(rawData);
 
     const workingMethods = getWorkingMethods(resolutionResults);
-    console.log('Working methods', workingMethods);
+    debugLog('Working methods', workingMethods);    // Fix Issue #563
 
     const workingUrls = getWorkingUrls(resolutionResults);
-    console.log('Working Urls', workingUrls);
+    debugLog('Working Urls', workingUrls);      // Fix Issue #564
 
     const resolvers = [];
 

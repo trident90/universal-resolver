@@ -344,15 +344,23 @@ public class HttpDriver implements Driver {
 
 		// remote properties
 
+		// Fix Issue #545
 		try {
-
 			Map<String, Object> remoteProperties = this.remoteProperties();
 			if (remoteProperties != null) properties.putAll(remoteProperties);
-		} catch (Exception ex) {
-
-			if (log.isWarnEnabled()) log.warn("Cannot retrieve remote properties: " + ex.getMessage(), ex);
-			properties.put("remotePropertiesException", ex.getMessage());
-		}
+		} catch (ResolutionException rex) {
+            if (log.isWarnEnabled()) log.warn("ResolutionException while retrieving remote properties: " + rex.getMessage(), rex);
+            properties.put("remotePropertiesResolutionException", rex.getMessage());
+        } catch (IOException ioex) {
+            if (log.isWarnEnabled()) log.warn("IOException while retrieving remote properties: " + ioex.getMessage(), ioex);
+            properties.put("remotePropertiesIOException", ioex.getMessage());
+        } catch (IllegalArgumentException iaex) {
+            if (log.isWarnEnabled()) log.warn("IllegalArgumentException while retrieving remote properties: " + iaex.getMessage(), iaex);
+            properties.put("remotePropertiesIllegalArgumentException", iaex.getMessage());
+        } catch (Exception ex) {
+            if (log.isWarnEnabled()) log.warn("Unknown exception while retrieving remote properties: " + ex.getMessage(), ex);
+            properties.put("remotePropertiesException", ex.getMessage());
+        }
 
 		// done
 

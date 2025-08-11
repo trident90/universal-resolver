@@ -31,8 +31,21 @@ def add_config(config):
             spec_file.close()
 
 
+# Fix Issue #569
+def safe_yaml_load(stream, allowed_keys):
+    data = yaml.load(stream, Loader=yaml.FullLoader)
+    if not isinstance(data, dict):
+        raise ValueError("Loaded YAML is not a dictionary.")
+    for key in data.keys():
+        if key not in allowed_keys:
+            raise ValueError(f"Unexpected key '{key}' found in YAML. Allowed keys: {allowed_keys}")
+    return data
+
+
 def main(argv):
-    config = yaml.load(open('driver-config.yaml', 'r'), Loader=yaml.FullLoader)
+    allowed_keys = ['driver1', 'driver2', 'driver3']  # 화이트리스트에 허용할 키값을 명시적으로 작성
+    with open('driver-config.yaml', 'r') as f:
+        config = safe_yaml_load(f, allowed_keys)
     add_config(config)
 
 

@@ -13,14 +13,14 @@ const generateDefaultFile = (path) => {
         const resolvers = []
 
         files.forEach(file => {
-            console.log(file);
+            debugLog(file); // Fix Issue #565
             const fileContent = JSON.parse(fs.readFileSync(`${path}/${file}`));
-            console.log(fileContent);
+            debugLog(fileContent);  // Fix Issue #566
             if (file.startsWith('universal-resolver') || file.startsWith('resolver')) {
                 resolvers.push(`require('../implementations/${file}')`)
             }
         });
-        console.log(resolvers)
+        debugLog(resolvers); // Fix Issue #567
 
         fs.writeFileSync(
             '/Users/devfox/testsuites/did-test-suite/packages/did-core-test-server/suites/did-resolution/default.js',

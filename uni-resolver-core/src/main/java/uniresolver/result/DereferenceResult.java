@@ -123,8 +123,9 @@ public class DereferenceResult implements Result {
 		this.dereferencingMetadata = dereferencingMetadata;
 	}
 
+	// Fix Issue #549
 	public final byte[] getContent() {
-		return this.content;
+		return this.content == null ? null : this.content.clone();
 	}
 
 	@JsonGetter("content")
@@ -132,18 +133,23 @@ public class DereferenceResult implements Result {
 		if (this.getContent() == null) {
 			return null;
 		} else {
+			// Fix Issue #550
 			try {
 				try (JsonParser jsonParser = objectMapper.getFactory().createParser(this.getContent())) {
 					if (jsonParser.readValueAsTree() != null) return new String(this.getContent(), StandardCharsets.UTF_8);
 				}
-			} catch (IOException ignored) {
+			} catch (IOException ex) {
+				// 에러 로그 추가
+				System.err.println("IOException in getContentAsString: " + ex.getMessage());
+				ex.printStackTrace();
 			}
 			return Hex.encodeHexString(this.getContent());
 		}
 	}
 
+	// Fix Issue #551
 	public final void setContent(byte[] content) {
-		this.content = content;
+		this.content = content == null ? null : content.clone();
 	}
 
 	@JsonSetter("content")

@@ -14,7 +14,7 @@ const runTests = (resolvers, host, outputPath) => {
     ).then(res => {
         const timestamp = new Date().toISOString().split('.')[0];
         fs.writeFileSync(`${outputPath}/did-test-suite-report-${timestamp}.json`, JSON.stringify(res.data.suitesReportJson, null, 2))
-    }).catch(err => console.log(err));
+    }).catch(err => debugLog(err)); // Fix Issue #568
 }
 
 module.exports = {runTests}

@@ -14,9 +14,16 @@ public class TestLocalUniDereferencer {
 
 		LocalUniResolver uniResolver = new LocalUniResolver();
 		uniResolver.getDrivers().add(new DidSovDriver());
-		uniResolver.getDriver(DidSovDriver.class).setLibIndyPath("./sovrin/lib/libindy.so");
-		uniResolver.getDriver(DidSovDriver.class).setPoolConfigs("_;./sovrin/mainnet.txn");
-		uniResolver.getDriver(DidSovDriver.class).setPoolVersions("_;2");
+		// Fix Issue #539, #540, #541
+		DidSovDriver didSovDriver = uniResolver.getDriver(DidSovDriver.class);
+		if (didSovDriver != null) {
+			// Fix Issue #544
+			if (didSovDriver.getLibIndyPath() != null) {
+				didSovDriver.setLibIndyPath("./sovrin/lib/libindy.so");
+			}
+			didSovDriver.setPoolConfigs("_;./sovrin/mainnet.txn");
+			didSovDriver.setPoolVersions("_;2");
+		}
 
 		LocalUniDereferencer uniDereferencer = new LocalUniDereferencer();
 		uniDereferencer.setUniResolver(uniResolver);

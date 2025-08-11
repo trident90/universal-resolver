@@ -33,13 +33,20 @@ public class TestIdentifiersServlet extends WebUniResolver {
 		Map<String, List<String>> testIdentifiers;
 		String testIdentifiersString;
 
+		// Fix Issue #556
 		try {
-
 			testIdentifiers = this.testIdentifiers();
 			testIdentifiersString = testIdentifiers == null ? null : objectMapper.writeValueAsString(testIdentifiers);
+		} catch (IOException ioex) {
+			if (log.isWarnEnabled()) log.warn("IOException while retrieving test identifiers: " + ioex.getMessage(), ioex);
+			ServletUtil.sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "IOException while retrieving test identifiers: " + ioex.getMessage());
+			return;
+		} catch (IllegalArgumentException iaex) {
+			if (log.isWarnEnabled()) log.warn("IllegalArgumentException while retrieving test identifiers: " + iaex.getMessage(), iaex);
+			ServletUtil.sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, "IllegalArgumentException while retrieving test identifiers: " + iaex.getMessage());
+			return;
 		} catch (Exception ex) {
-
-			if (log.isWarnEnabled()) log.warn("Resolver reported: " + ex.getMessage(), ex);
+			if (log.isWarnEnabled()) log.warn("Unknown exception while retrieving test identifiers: " + ex.getMessage(), ex);
 			ServletUtil.sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Resolver reported: " + ex.getMessage());
 			return;
 		}
@@ -49,7 +56,6 @@ public class TestIdentifiersServlet extends WebUniResolver {
 		// no result?
 
 		if (testIdentifiers == null) {
-
 			ServletUtil.sendResponse(response, HttpServletResponse.SC_NOT_FOUND, "No test identifiers.");
 			return;
 		}
