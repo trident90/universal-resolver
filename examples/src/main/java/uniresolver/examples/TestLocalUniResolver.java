@@ -11,11 +11,17 @@ public class TestLocalUniResolver {
 
 	public static void main(String[] args) throws Exception {
 
+		// Fix Issue 837, 838, 839
 		LocalUniResolver uniResolver = new LocalUniResolver();
 		uniResolver.getDrivers().add(new DidSovDriver());
-		uniResolver.getDriver(DidSovDriver.class).setLibIndyPath("./sovrin/lib/libindy.so");
-		uniResolver.getDriver(DidSovDriver.class).setPoolConfigs("_;./sovrin/mainnet.txn");
-		uniResolver.getDriver(DidSovDriver.class).setPoolVersions("_;2");
+		DidSovDriver didSovDriver = uniResolver.getDriver(DidSovDriver.class);
+		if (didSovDriver != null) {
+		    didSovDriver.setLibIndyPath("./sovrin/lib/libindy.so");
+		    didSovDriver.setPoolConfigs("_;./sovrin/mainnet.txn");
+		    didSovDriver.setPoolVersions("_;2");
+		} else {
+		    System.err.println("DidSovDriver is not available.");
+		}
 
 		Map<String, Object> resolveOptions = new HashMap<>();
 		resolveOptions.put("accept", "application/did+ld+json");

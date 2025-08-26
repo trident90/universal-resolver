@@ -133,15 +133,14 @@ public class DereferenceResult implements Result {
 		if (this.getContent() == null) {
 			return null;
 		} else {
-			// Fix Issue #550
+			// Fix Issue #550, #845, #846
 			try {
 				try (JsonParser jsonParser = objectMapper.getFactory().createParser(this.getContent())) {
 					if (jsonParser.readValueAsTree() != null) return new String(this.getContent(), StandardCharsets.UTF_8);
 				}
 			} catch (IOException ex) {
 				// 에러 로그 추가
-				System.err.println("IOException in getContentAsString: " + ex.getMessage());
-				ex.printStackTrace();
+				System.err.println("IOException: " + ex.getMessage());
 			}
 			return Hex.encodeHexString(this.getContent());
 		}
