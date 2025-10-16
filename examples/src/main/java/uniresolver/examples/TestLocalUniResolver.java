@@ -24,7 +24,7 @@ public class TestLocalUniResolver {
 		}
 
 		Map<String, Object> resolveOptions = new HashMap<>();
-		resolveOptions.put("accept", "application/did+ld+json");
+		resolveOptions.put("accept", "application/did");
 
 		ResolveResult resolveResult;
 		resolveResult = uniResolver.resolve("did:sov:WRfXPg8dantKVubE3HX8pw", resolveOptions);

@@ -127,6 +127,7 @@ public class ResolveServlet extends HttpServlet implements Servlet {
 			} catch (IOException ioex) {
 				if (log.isWarnEnabled()) log.warn("IOException for " + identifier + ": " + ioex.getMessage(), ioex);
 				result = new ResolutionException("IO error while resolving " + identifier + ": " + ioex.getMessage(), ioex).toErrorResolveResult();
+				if (result == null) throw new ResolutionException(DereferencingException.ERROR_NOT_FOUND, "No resolve result for " + identifier);
 			} catch (Exception ex) {
 				if (log.isWarnEnabled()) log.warn("Unknown resolve problem for " + identifier + ": " + ex.getMessage(), ex);
 				result = new ResolutionException("Resolve problem for " + identifier + ": " + ex.getMessage(), ex).toErrorResolveResult();
@@ -195,7 +196,7 @@ public class ResolveServlet extends HttpServlet implements Servlet {
 
 		for (MediaType httpAcceptMediaType : httpAcceptMediaTypes) {
 
-			if (result instanceof ResolveResult && MediaTypeUtil.isMediaTypeAcceptable(httpAcceptMediaType, ResolveResult.MEDIA_TYPE)) {
+			if (result instanceof ResolveResult && (MediaTypeUtil.isMediaTypeAcceptable(httpAcceptMediaType, ResolveResult.MEDIA_TYPE) || MediaTypeUtil.isMediaTypeAcceptable(httpAcceptMediaType, ResolveResult.LEGACY_MEDIA_TYPE))) {
 				if (log.isDebugEnabled()) log.debug("Supporting HTTP media type " + httpAcceptMediaType + " via default resolve result content type " + ResolveResult.MEDIA_TYPE);
 				ServletUtil.sendResponse(
 						response,
@@ -205,7 +206,7 @@ public class ResolveServlet extends HttpServlet implements Servlet {
 				return;
 			}
 
-			if (result instanceof DereferenceResult && MediaTypeUtil.isMediaTypeAcceptable(httpAcceptMediaType, DereferenceResult.MEDIA_TYPE)) {
+			if (result instanceof DereferenceResult && (MediaTypeUtil.isMediaTypeAcceptable(httpAcceptMediaType, DereferenceResult.MEDIA_TYPE) || MediaTypeUtil.isMediaTypeAcceptable(httpAcceptMediaType, DereferenceResult.LEGACY_MEDIA_TYPE))) {
 				if (log.isDebugEnabled()) log.debug("Supporting HTTP media type " + httpAcceptMediaType + " via default dereference result content type " + DereferenceResult.MEDIA_TYPE);
 				ServletUtil.sendResponse(
 						response,
