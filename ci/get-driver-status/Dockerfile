@@ -21,4 +21,11 @@ COPY app/get-driver-status.py .
 
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
+
+# Create non-root user
+RUN useradd -u 1000 -m appuser && \
+    chown -R appuser:appuser /get-driver-status /entrypoint.sh
+
+USER appuser
+
 ENTRYPOINT ["/entrypoint.sh"]

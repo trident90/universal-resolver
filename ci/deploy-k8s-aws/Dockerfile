@@ -32,4 +32,10 @@ RUN apt-get update -y && \
 COPY scripts /scripts
 RUN chmod +x /scripts/*.sh
 
+# Create non-root user
+RUN useradd -u 1000 -m appuser && \
+    chown -R appuser:appuser /scripts
+
+USER appuser
+
 ENTRYPOINT ["/scripts/entrypoint.sh"]

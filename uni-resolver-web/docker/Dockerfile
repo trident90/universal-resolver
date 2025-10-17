@@ -24,7 +24,13 @@ WORKDIR /opt/universal-resolver/uni-resolver-web/
 
 COPY --from=build /opt/universal-resolver/uni-resolver-web/target/*-exec.jar ./
 
+# Create non-root user
+RUN adduser -D -u 1000 appuser && \
+    chown -R appuser:appuser /opt/universal-resolver/uni-resolver-web
+
 ENV uniresolver_web_spring_profiles_active=default
+
+USER appuser
 
 # done
 

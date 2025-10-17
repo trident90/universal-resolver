@@ -24,4 +24,11 @@ COPY app/utils.js .
 
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
+
+# Create non-root user
+RUN adduser -D -u 1000 appuser && \
+    chown -R appuser:appuser /run-did-test-suite /entrypoint.sh
+
+USER appuser
+
 ENTRYPOINT ["/entrypoint.sh"]
