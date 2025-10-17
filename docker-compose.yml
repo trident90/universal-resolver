@@ -4,6 +4,9 @@ networks:
 
 services:
   uni-resolver-web:
+    build:
+      context: ./uni-resolver-web
+      dockerfile: docker/Dockerfile
     image: universalresolver/uni-resolver-web:latest
     ports:
       - "8080:8080"
