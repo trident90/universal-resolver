@@ -117,17 +117,13 @@ public class ResolveServlet extends HttpServlet implements Servlet {
 			// Fix Issue #547
 			try {
 				result = InitServlet.getDriver().resolve(DID.fromString(identifier), options);
-				if (result == null) throw new ResolutionException(DereferencingException.ERROR_NOTFOUND, "No resolve result for " + identifier);
+				if (result == null) throw new ResolutionException(ResolutionException.ERROR_NOT_FOUND, "No resolve result for " + identifier);
 			} catch (ResolutionException rex) {
 				if (log.isWarnEnabled()) log.warn("ResolutionException for " + identifier + ": " + rex.getMessage(), rex);
 				result = rex.toErrorResolveResult();
 			} catch (IllegalArgumentException iaex) {
 				if (log.isWarnEnabled()) log.warn("IllegalArgumentException for " + identifier + ": " + iaex.getMessage(), iaex);
 				result = new ResolutionException("Invalid identifier: " + identifier + ", " + iaex.getMessage(), iaex).toErrorResolveResult();
-			} catch (IOException ioex) {
-				if (log.isWarnEnabled()) log.warn("IOException for " + identifier + ": " + ioex.getMessage(), ioex);
-				result = new ResolutionException("IO error while resolving " + identifier + ": " + ioex.getMessage(), ioex).toErrorResolveResult();
-				if (result == null) throw new ResolutionException(DereferencingException.ERROR_NOT_FOUND, "No resolve result for " + identifier);
 			} catch (Exception ex) {
 				if (log.isWarnEnabled()) log.warn("Unknown resolve problem for " + identifier + ": " + ex.getMessage(), ex);
 				result = new ResolutionException("Resolve problem for " + identifier + ": " + ex.getMessage(), ex).toErrorResolveResult();
@@ -136,18 +132,14 @@ public class ResolveServlet extends HttpServlet implements Servlet {
 			// Fix Issue #548
 			try {
 				result = InitServlet.getDriver().dereference(DIDURL.fromString(identifier), options);
-				if (result == null) throw new DereferencingException(DereferencingException.ERROR_NOTFOUND, "No dereference result for " + identifier);
+				if (result == null) throw new DereferencingException(DereferencingException.ERROR_NOT_FOUND, "No dereference result for " + identifier);
 			} catch (ResolutionException rex) {
 				if (log.isWarnEnabled()) log.warn("ResolutionException for " + identifier + ": " + rex.getMessage(), rex);
-				DereferencingException dex = new DereferencingException(rex.getError(), "Error " + rex.getError() + " from resolver: " + rex.getMessage(), rex.getDidResolutionMetadata(), rex);
+				DereferencingException dex = new DereferencingException(rex.getErrorType(), "Error " + rex.getErrorType() + " from resolver: " + rex.getMessage(), null, rex.getDidResolutionMetadata(), rex);
 				result = dex.toErrorDereferenceResult();
 			} catch (IllegalArgumentException iaex) {
 				if (log.isWarnEnabled()) log.warn("IllegalArgumentException for " + identifier + ": " + iaex.getMessage(), iaex);
 				DereferencingException dex = new DereferencingException("Invalid identifier: " + identifier + ", " + iaex.getMessage(), iaex);
-				result = dex.toErrorDereferenceResult();
-			} catch (IOException ioex) {
-				if (log.isWarnEnabled()) log.warn("IOException for " + identifier + ": " + ioex.getMessage(), ioex);
-				DereferencingException dex = new DereferencingException("IO error while dereferencing " + identifier + ": " + ioex.getMessage(), ioex);
 				result = dex.toErrorDereferenceResult();
 			} catch (DereferencingException dex) {
 				if (log.isWarnEnabled()) log.warn("DereferencingException for " + identifier + ": " + dex.getMessage(), dex);

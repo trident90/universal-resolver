@@ -353,9 +353,6 @@ public class HttpDriver implements Driver {
 		} catch (ResolutionException rex) {
             if (log.isWarnEnabled()) log.warn("ResolutionException while retrieving remote properties: " + rex.getMessage(), rex);
             properties.put("remotePropertiesResolutionException", rex.getMessage());
-        } catch (IOException ioex) {
-            if (log.isWarnEnabled()) log.warn("IOException while retrieving remote properties: " + ioex.getMessage(), ioex);
-            properties.put("remotePropertiesIOException", ioex.getMessage());
         } catch (IllegalArgumentException iaex) {
             if (log.isWarnEnabled()) log.warn("IllegalArgumentException while retrieving remote properties: " + iaex.getMessage(), iaex);
             properties.put("remotePropertiesIllegalArgumentException", iaex.getMessage());
